@@ -1,0 +1,76 @@
+from pathlib import Path
+
+html = r'''<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071326">
+<title>YAPZ — Your Digital Space</title>
+<style>
+:root{--bg:#050b16;--panel:#0b1930;--panel2:#102544;--blue:#27a9ff;--cyan:#69d5ff;--text:#edf6ff;--muted:#9bb1cb;--line:#1b3b60}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0%,#102d50 0,transparent 34%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}.wrap{width:min(100% - 28px,1050px);margin:auto}
+header{position:sticky;top:0;z-index:5;background:#061124eF;backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}.brand{font-weight:900;font-size:25px;letter-spacing:2px;color:var(--cyan)}.brand span{color:white}
+.btn{border:1px solid #27669a;background:linear-gradient(135deg,#1689df,#1554a0);color:white;padding:10px 15px;border-radius:11px;font-weight:700}.btn.secondary{background:#10233d;border-color:var(--line)}.btn.danger{background:#48202d;border-color:#873c52}
+main{padding:28px 0 60px}.hero{padding:30px 0 20px}.eyebrow{color:var(--cyan);font-weight:800;letter-spacing:2px;font-size:12px}.hero h1{font-size:clamp(34px,8vw,62px);line-height:1.04;margin:10px 0}.hero h1 em{font-style:normal;color:var(--cyan)}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.card{background:linear-gradient(145deg,#0d1d35,#091629);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 12px 35px #0003}.card h2,.card h3{margin:0 0 12px}.card p{color:var(--muted);margin:6px 0}.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:13px;color:#c4d7ed}.field input,.field select{width:100%;padding:12px;border:1px solid #294765;border-radius:10px;background:#061326;color:white;outline:none}.field input:focus{border-color:var(--cyan)}.tabs{display:flex;gap:8px;margin:18px 0;flex-wrap:wrap}.tabs button{flex:1;min-width:110px}.status{font-size:13px;color:var(--cyan);min-height:20px}.bigtime{font-size:34px;font-weight:800;color:var(--cyan);font-variant-numeric:tabular-nums}.prayer-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}.prayer-row:last-child{border:0}.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.calc input{grid-column:1/-1;text-align:right;font-size:26px}.calc button{padding:15px 5px;border-radius:10px;border:1px solid var(--line);background:#102544;color:white}.calc button.op{background:#124c7a}.calc button.equal{background:#087bbd}.footer{text-align:center;color:#6f89a7;padding:28px 0;font-size:12px}
+.notice{border:1px solid #705b26;background:#2b2411;color:#f5dfa0;padding:12px;border-radius:12px;font-size:13px;line-height:1.5}
+@media(min-width:700px){.auth-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:center}.hero{padding:45px 0}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav"><div class="brand">YAPZ<span>.</span></div><div id="navRight" class="muted">YOUR DIGITAL SPACE</div></div></header>
+<main class="wrap">
+<section id="authView" class="auth-layout">
+  <div class="hero"><div class="eyebrow">WELCOME TO YOUR DIGITAL SPACE</div><h1>Explore your<br><em>own universe.</em></h1><p class="muted">Masuk atau buat akun demo untuk membuka dashboard YAPZ berisi kalkulator, game, jam dunia, dan jadwal salat.</p></div>
+  <div class="card">
+    <div class="tabs"><button class="btn" id="loginTab" onclick="showAuth('login')">Login</button><button class="btn secondary" id="registerTab" onclick="showAuth('register')">Daftar</button></div>
+    <form id="authForm">
+      <div class="field"><label for="username">Username</label><input id="username" autocomplete="username" required minlength="3" maxlength="24" placeholder="Masukkan username"></div>
+      <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required minlength="6" placeholder="Masukkan password"></div>
+      <button class="btn" style="width:100%" id="authSubmit">Masuk</button><p class="status" id="authStatus"></p>
+    </form>
+    <p class="muted" style="font-size:12px">Demo belajar: akun hanya tersimpan di browser/perangkat ini. Jangan gunakan password asli.</p>
+  </div>
+</section>
+
+<section id="appView" class="hidden">
+  <div class="hero"><div class="eyebrow">YAPZ DASHBOARD</div><h1>Selamat datang,<br><em id="helloName">Teman</em>!</h1><p class="muted">Senang melihat lo kembali. Pilih fitur yang ingin digunakan.</p></div>
+  <div class="grid">
+    <article class="card"><h3>🧮 Kalkulator</h3><div class="calc"><input id="calcDisplay" value="0" readonly aria-label="Hasil kalkulator"><button onclick="calcClear()">C</button><button onclick="calcAdd('(')">(</button><button onclick="calcAdd(')')">)</button><button class="op" onclick="calcAdd('/')">÷</button><button onclick="calcAdd('7')">7</button><button onclick="calcAdd('8')">8</button><button onclick="calcAdd('9')">9</button><button class="op" onclick="calcAdd('*')">×</button><button onclick="calcAdd('4')">4</button><button onclick="calcAdd('5')">5</button><button onclick="calcAdd('6')">6</button><button class="op" onclick="calcAdd('-')">−</button><button onclick="calcAdd('1')">1</button><button onclick="calcAdd('2')">2</button><button onclick="calcAdd('3')">3</button><button class="op" onclick="calcAdd('+')">+</button><button onclick="calcAdd('0')">0</button><button onclick="calcAdd('.')">.</button><button onclick="calcBack()">⌫</button><button class="equal" onclick="calcResult()">=</button></div></article>
+    <article class="card"><h3>🎮 Tebak Angka</h3><p>Tebak angka dari 1 sampai 20.</p><div class="field"><input id="guessInput" type="number" min="1" max="20" placeholder="Angka tebakan"></div><button class="btn" onclick="guess()">Tebak!</button> <button class="btn secondary" onclick="newGame()">Ulang</button><p id="gameStatus" class="status">Ayo mulai bermain!</p></article>
+    <article class="card"><h3>🕒 Jam Dunia</h3><p class="muted">Pilih kota untuk melihat waktu lokal.</p><div class="field"><select id="zone" onchange="updateWorldClock()"><option value="Asia/Jakarta">Jakarta</option><option value="Asia/Makassar">Makassar</option><option value="Asia/Jayapura">Jayapura</option><option value="Asia/Tokyo">Tokyo</option><option value="Asia/Singapore">Singapura</option><option value="Europe/London">London</option><option value="America/New_York">New York</option><option value="Asia/Riyadh">Makkah/Riyadh</option></select></div><div id="worldClock" class="bigtime">--:--:--</div><p id="worldDate" class="muted"></p></article>
+    <article class="card"><h3>🕌 Jadwal Salat</h3><p class="muted">Jadwal perkiraan berdasarkan kota di Indonesia.</p><div class="field"><select id="city" onchange="loadPrayerTimes()"><option>Yogyakarta</option><option>Jakarta</option><option>Bandung</option><option>Semarang</option><option>Surabaya</option><option>Solo</option><option>Medan</option><option>Makassar</option><option>Denpasar</option><option>Palembang</option></select></div><div id="prayerList"><p class="muted">Memuat jadwal salat...</p></div><p id="prayerStatus" class="status"></p><p class="muted" style="font-size:11px">Waktu dari layanan AlAdhan; cocokkan dengan jadwal masjid setempat.</p></article>
+  </div>
+  <div class="grid" style="margin-top:14px">
+    <article class="card"><h3>👤 Akun</h3><p>Login sebagai <b id="currentUser"></b></p><button class="btn secondary" onclick="logout()">Keluar</button></article>
+    <article class="card" id="adminCard"><h3>🛡️ Admin demo</h3><p>Daftar username yang terdaftar di browser ini. Password tidak disimpan atau ditampilkan.</p><div id="userList" class="muted"></div><p class="muted" style="font-size:11px">Panel demo lokal, bukan sistem admin aman untuk website publik.</p></article>
+  </div>
+</section>
+<div class="footer">YAPZ · Built to learn, create, and grow.</div>
+</main>
+<script>
+let authMode='login', current=''; 
+const $=id=>document.getElementById(id);
+function getUsers(){try{return JSON.parse(localStorage.getItem('yapz_users')||'{}')}catch(e){return {}}}
+function showAuth(mode){authMode=mode;$('loginTab').className=mode==='login'?'btn':'btn secondary';$('registerTab').className=mode==='register'?'btn':'btn secondary';$('authSubmit').textContent=mode==='login'?'Masuk':'Buat akun';$('password').autocomplete=mode==='login'?'current-password':'new-password';$('authStatus').textContent=''}
+async function hashPassword(p){const data=new TextEncoder().encode(p);const hash=await crypto.subtle.digest('SHA-256',data);return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('')}
+$('authForm').addEventListener('submit',async e=>{e.preventDefault();const u=$('username').value.trim(),p=$('password').value;if(!/^[a-zA-Z0-9_]{3,24}$/.test(u)){ $('authStatus').textContent='Username 3–24 karakter: huruf, angka, atau _.';return}if(p.length<6){$('authStatus').textContent='Password minimal 6 karakter.';return}let users=getUsers();if(authMode==='register'){if(users[u]){$('authStatus').textContent='Username sudah digunakan.';return}users[u]={passwordHash:await hashPassword(p),createdAt:new Date().toISOString()};localStorage.setItem('yapz_users',JSON.stringify(users));$('authStatus').textContent='Akun demo dibuat. Silakan login.';showAuth('login');$('username').value=u;$('password').value=''}else{if(!users[u]||users[u].passwordHash!==await hashPassword(p)){$('authStatus').textContent='Username atau password salah.';return}enterApp(u)}});
+function enterApp(u){current=u;$('authView').classList.add('hidden');$('appView').classList.remove('hidden');$('helloName').textContent=u;$('currentUser').textContent=u;renderUsers();updateWorldClock();loadPrayerTimes()}
+function logout(){current='';$('appView').classList.add('hidden');$('authView').classList.remove('hidden');$('authForm').reset();showAuth('login')}
+function renderUsers(){const users=getUsers();const names=Object.keys(users);$('userList').innerHTML=names.length?names.map(n=>'<div class="prayer-row"><span>'+escapeHtml(n)+'</span><span>Terdaftar</span></div>').join(''):'Belum ada akun di browser ini.'}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+let expr='';function calcDraw(){$('calcDisplay').value=expr||'0'}function calcAdd(v){if(expr.length<45){expr+=v;calcDraw()}}function calcClear(){expr='';calcDraw()}function calcBack(){expr=expr.slice(0,-1);calcDraw()}function calcResult(){try{if(!/^[0-9+\-*/(). ]+$/.test(expr))throw Error();let result=Function('"use strict";return ('+expr+')')();if(!Number.isFinite(result))throw Error();expr=String(Math.round(result*1e8)/1e8);calcDraw()}catch(e){$('calcDisplay').value='Error';expr=''}}
+let answer=0;function newGame(){answer=Math.floor(Math.random()*20)+1;$('guessInput').value='';$('gameStatus').textContent='Angka baru sudah dipilih. Tebak!'}function guess(){const n=Number($('guessInput').value);if(!Number.isInteger(n)||n<1||n>20){$('gameStatus').textContent='Masukkan angka 1–20.';return}$('gameStatus').textContent=n===answer?'🎉 Benar! Hebat!':n<answer?'Terlalu kecil. Coba lagi!':'Terlalu besar. Coba lagi!';if(n===answer)newGame()}
+function updateWorldClock(){const z=$('zone').value,now=new Date();$('worldClock').textContent=new Intl.DateTimeFormat('id-ID',{timeZone:z,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);$('worldDate').textContent=new Intl.DateTimeFormat('id-ID',{timeZone:z,dateStyle:'full'}).format(now)}
+async function loadPrayerTimes(){const city=$('city').value;$('prayerList').innerHTML='<p class="muted">Memuat jadwal...</p>';$('prayerStatus').textContent='';try{const url='https://api.aladhan.com/v1/timingsByCity?city='+encodeURIComponent(city)+'&country=Indonesia&method=20';const r=await fetch(url);if(!r.ok)throw Error();const j=await r.json();if(j.code!==200)throw Error();const t=j.data.timings;const items=[['Subuh',t.Fajr],['Zuhur',t.Dhuhr],['Asar',t.Asr],['Magrib',t.Maghrib],['Isya',t.Isha]];$('prayerList').innerHTML=items.map(([n,v])=>'<div class="prayer-row"><span>'+n+'</span><b>'+v+'</b></div>').join('');$('prayerStatus').textContent='Tanggal: '+j.data.date.readable}catch(e){$('prayerList').innerHTML='<p class="muted">Jadwal tidak dapat dimuat. Periksa koneksi internet.</p>'}}
+setInterval(updateWorldClock,1000);newGame();showAuth('login');
+</script>
+</body>
+</html>'''
+
+path = Path("/mnt/data/yapz-website/index.html")
+path.parent.mkdir(parents=True, exist_ok=True)
+path.write_text(html, encoding="utf-8")
+print(f"Created: {path} ({path.stat().st_size} bytes)")
